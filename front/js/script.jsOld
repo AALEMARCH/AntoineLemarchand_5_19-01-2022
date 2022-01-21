@@ -1,3 +1,4 @@
+/*
 // Mise en place d'une variable qui contiendra les données de l'API
 let productsData = [];
 
