@@ -1,8 +1,11 @@
 const url_id = window.location.search;
 const urlSearchParams = new URLSearchParams(url_id);
 const product_id = urlSearchParams.get("id");
+const optionSelect = document.getElementById("colors");
+const quantity = document.getElementById("quantity");
 console.log(product_id);
 
+//appelle de produit individuel via l'api et l'ID
 loading().then((data) => {
   config = data;
   fetch(config.host + `/api/products/${product_id}`)
@@ -30,48 +33,92 @@ loading().then((data) => {
       }
       addProducts(eachProductData);
     });
-  const addProducts = () => {
-    let button = document.getElementById("addToCart");
-    console.log(button);
-    button.addEventListener("click", () => {
-      let optionSelect = document.getElementById("colors");
-      console.log(optionSelect);
+
+  // gestion du panier
+  const addProducts = (eachProductData) => {
+    const button = document.getElementById("addToCart");
+    button.addEventListener("click", (event) => {
+      event.preventDefault();
+
+      let quantityProducts = quantity.value;
+      let colorsProducts = optionSelect.value;
+
+      //condition de limite de quantités
+      const limiteQuantity = () => {
+        if (quantityProducts >= 1 && quantityProducts <= 100) {
+          return quantityProducts;
+        } else {
+          return alert("Nombre d'article(s) (1-100)!");
+        }
+      };
+
+      //multiplication du prix en fonction de la quantité d'article selectionné
+      const priceProduct = () => {
+        if (quantityProducts >= 1 && quantityProducts <= 100) {
+          return eachProductData.price * quantityProducts;
+        } else {
+          return undefined;
+        }
+      };
+
+      //alerte si aucune couleurs d'article n'a été selectionné
+      const warningColor = () => {
+        if (colorsProducts != [""]) {
+          return colorsProducts;
+        } else {
+          return alert("veuillez choisir une couleur!");
+        }
+      };
+
+      //création d'un tableau qui prend en compte les article selectionner, la quantité, la couleur et le prix
+
+      let tableToAddLocalStorage = {
+        altImage: eachProductData.altTxt,
+        color: warningColor(),
+        description: eachProductData.description,
+        imageUrl: eachProductData.imageUrl,
+        name: eachProductData.name,
+        price: priceProduct(),
+        quantity: limiteQuantity(),
+        id: product_id,
+      };
+
+      console.log(tableToAddLocalStorage);
+
+      //fonction fenetre popup
+      const popupConfirmation = () => {
+        if (
+          window.confirm(
+            `votre commande n° ${product_id}, ${eachProductData.name}, de couleur ${colorsProducts} est validé, consultez le panier OK ou continuer vos achats ANNULER`
+          )
+        ) {
+          window.location.href = "cart.html";
+        } else {
+          window.location.href = "index.html";
+        }
+      };
+
+      //initialisation du local sttorage "key value"/ conversion des donnée au format json , en objet javascript
+      let tableProducts = JSON.parse(localStorage.getItem("product"));
+
+      // ajout de produit dans le local storage
+      const pushArray = () => {
+        tableProducts.push(tableToAddLocalStorage);
+        localStorage.setItem("product", JSON.stringify(tableProducts));
+      };
+
+      //si il y a deja des produits enregistré dans le local storage
+      if (tableProducts) {
+        pushArray();
+        popupConfirmation();
+
+        //si il n'y a pas de produit dans le local storage
+      } else {
+        tableProducts = [];
+        pushArray();
+        popupConfirmation();
+      }
+      console.log(tableProducts);
     });
   };
 });
-/*
-const fetchEachProducts = async () => {
-  await fetch(`http://localhost:3000/api/products/${product}`)
-    .then((res) => res.json())
-    .then((data) => (eachProductData = data))
-    .catch((res) => {
-      alert("une erreur est survenue!");
-    });
-
-  console.log(eachProductData);
-};
-
-
-const displayEachProduct = async () => {
-  await fetchEachProducts();
-
- 
-};*/
-
-//displayEachProduct();
-
-//envoie des données dans le local storage
-
-const sendData = () => {
-  localStorage.setItem(
-    addProducts(eachProductData),
-    JSON.stringify(addProducts(eachProductData))
-  );
-};
-
-/*
-= document.getElementById("addToCart");
-addProducts.addEventListener("click", () => {
-  console.log(addProducts);
-});
-console.log(addProducts);*/
