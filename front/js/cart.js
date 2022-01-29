@@ -77,7 +77,7 @@ const cartDisplay = () => {
         itemDivSettingQuantity.appendChild(itemQuantity);
         itemQuantity.innerHTML = `Qté : + `;
 
-        //insertion de l'input
+        //insertion de l'input pour la quantité
         let itemInput = document.createElement("input");
         itemDivSettingQuantity.appendChild(itemInput);
         itemInput.setAttribute("type", "number");
@@ -107,13 +107,115 @@ const cartDisplay = () => {
 };
 cartDisplay();
 
-//Activation du boutton supprimer
+/***************************************************************************************/
+/***************************************************************************************/
+/****************************calcul de la quantité total********************************/
+
+//initialisation du calcul de la quantité total
+let quantityCart = [];
+for (let a = 0; a < itemRecovery.length; a++) {
+  let totalQuantityCart = itemRecovery[a].quantity;
+  quantityCart.push(totalQuantityCart);
+}
+
+//convertion du tableau de chaine "quantityCart", en nombre entiers
+for (let e = 0; e < quantityCart.length; e++) {
+  quantityCart[e] = parseInt(quantityCart[e]);
+}
+
+//finalisation du calcul de la quantité total
+let sumProductQuantity = 0;
+for (let d = 0; d < quantityCart.length; d++) {
+  sumProductQuantity += quantityCart[d];
+}
+console.log(
+  sumProductQuantity
+); /**********************Quantité total********************/
+
+//insertion de la quantité total dans le dom
+let totalQuantity = document.querySelector("#totalQuantity");
+totalQuantity.innerHTML = sumProductQuantity;
+
+/*****************************************************************************************/
+/*****************************************************************************************/
+/******************************calcul du prix total***************************************/
+
+/*Somme individuel de chaque produit en fonction de sa quantité, mise en place d'un tableau qui recupere les chiffres*/
+let eachCartPrice = [];
+for (let product in itemRecovery) {
+  totalEachProduct =
+    itemRecovery[product].price * itemRecovery[product].quantity;
+  eachCartPrice.push(totalEachProduct);
+}
+
+//Sommes des valeurs des produits individuel pour calculé le total du prix du panier
+let totalPriceCart = 0;
+for (let b = 0; b < eachCartPrice.length; b++) {
+  totalPriceCart += eachCartPrice[b];
+}
+console.log(
+  totalPriceCart
+); /**************************Prix total**************************/
+
+//insertion du prix total dans le dom
+let domTotalPrice = document.querySelector("#totalPrice");
+domTotalPrice.innerHTML = totalPriceCart;
+
+/*****************************************************************************************/
+/*****************************************************************************************/
+/************************Activation du boutton supprimer**********************************/
+
 /*
-const deleteButton = document
-  .getElementsByClassName("deleteItem")
-  .addEventListener("click", (event) => {
+let deleteButton = document.getElementsByClassName("deleteItem");
+deleteButton = element.closest(".deleteItem").dataset;
+console.log(deleteButton);
+
+const del = () => {
+  let test = document.closest(".deleteItem").dataset;
+
+  console.log(test);
+  test.addEventListener("click", (event) => {
     event.preventDefault();
-    if (deleteButton) {
-      itemRecovery.splice([product]);
+    console.log(event);
+  });
+};
+
+
+let newTable = Object.keys(itemRecovery).map(function (key) {
+  return [Number(key), itemRecovery[key]];
+});
+console.log(newTable);
+
+for (let j = 0; j < deleteButton.length; j++) {
+  deleteButton[j].addEventListener("click", (event) => {
+    event.preventDefault();
+    console.log(event);
+
+    let suppr = newTable[j].splice(0, 7);
+  });
+}
+
+
+
+
+
+
+let idProduitSelect = itemRecovery[j].id;
+    console.log(idProduitSelect);
+    let colorProduitSelect = itemRecovery[j].color;
+    console.log(colorProduitSelect);
+    if (
+      deleteButton[j].id === product_id &&
+      deleteButton[j].color != warningColor()
+    ) {
     }
-  });*/
+
+
+
+deleteButton.addEventListener("click", (event) => {
+  event.preventDefault();
+  if(deleteButton[j].id === product_id && deleteButton[j].color != warningColor()){
+  const table = itemRecovery.stringy;
+  const deleteProduct = itemRecovery.filter((product) => itemRecovery[product]);
+});
+*/

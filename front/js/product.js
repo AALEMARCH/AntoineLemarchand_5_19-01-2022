@@ -6,6 +6,7 @@ const quantity = document.getElementById("quantity");
 console.log(product_id);
 
 //appelle de produit individuel via l'api et l'ID
+//insertion dans le html via JavaScript
 loading().then((data) => {
   config = data;
   fetch(config.host + `/api/products/${product_id}`)
@@ -55,7 +56,7 @@ loading().then((data) => {
       //multiplication du prix en fonction de la quantité d'article selectionné
       const priceProduct = () => {
         if (quantityProducts >= 1 && quantityProducts <= 100) {
-          return eachProductData.price * quantityProducts;
+          return eachProductData.price; //(* quantityProducts;)
         } else {
           return undefined;
         }
@@ -108,17 +109,31 @@ loading().then((data) => {
       };
 
       //si il y a deja des produits enregistré dans le local storage
-      if (tableProducts) {
-        pushArray();
-        popupConfirmation();
+      //si il y a deja un produit similaire de selectionner
+      //si il n'y a pas encore de produit dans le local storage
 
-        //si il n'y a pas de produit dans le local storage
+      if (tableProducts) {
+        const resultFind = tableProducts.find(
+          (element) =>
+            element.id === product_id && element.color === warningColor()
+        );
+        if (resultFind) {
+          resultFind.quantity =
+            parseInt(tableToAddLocalStorage.quantity) +
+            parseInt(resultFind.quantity);
+          //resultFind.price =
+          // parseInt(eachProductData.price) * parseInt(resultFind.quantity);
+          localStorage.setItem("product", JSON.stringify(tableProducts));
+          popupConfirmation();
+        } else {
+          pushArray();
+          popupConfirmation();
+        }
       } else {
         tableProducts = [];
         pushArray();
         popupConfirmation();
       }
-      console.log(tableProducts);
     });
   };
 });
