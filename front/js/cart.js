@@ -110,112 +110,129 @@ cartDisplay();
 /***************************************************************************************/
 /***************************************************************************************/
 /****************************calcul de la quantité total********************************/
+function getTotalQuantity() {
+  //initialisation du calcul de la quantité total
+  let quantityCart = [];
+  for (let a = 0; a < itemRecovery.length; a++) {
+    let totalQuantityCart = itemRecovery[a].quantity;
+    quantityCart.push(totalQuantityCart);
+  }
 
-//initialisation du calcul de la quantité total
-let quantityCart = [];
-for (let a = 0; a < itemRecovery.length; a++) {
-  let totalQuantityCart = itemRecovery[a].quantity;
-  quantityCart.push(totalQuantityCart);
+  //convertion du tableau de chaine "quantityCart", en nombre entiers
+  for (let e = 0; e < quantityCart.length; e++) {
+    quantityCart[e] = parseInt(quantityCart[e]);
+  }
+
+  //finalisation du calcul de la quantité total
+  let sumProductQuantity = 0;
+  for (let d = 0; d < quantityCart.length; d++) {
+    sumProductQuantity += quantityCart[d];
+  }
+  console.log(
+    sumProductQuantity
+  ); /**********************Quantité total********************/
+
+  //insertion de la quantité total dans le dom
+  let totalQuantity = document.querySelector("#totalQuantity");
+  totalQuantity.innerHTML = sumProductQuantity;
 }
-
-//convertion du tableau de chaine "quantityCart", en nombre entiers
-for (let e = 0; e < quantityCart.length; e++) {
-  quantityCart[e] = parseInt(quantityCart[e]);
-}
-
-//finalisation du calcul de la quantité total
-let sumProductQuantity = 0;
-for (let d = 0; d < quantityCart.length; d++) {
-  sumProductQuantity += quantityCart[d];
-}
-console.log(
-  sumProductQuantity
-); /**********************Quantité total********************/
-
-//insertion de la quantité total dans le dom
-let totalQuantity = document.querySelector("#totalQuantity");
-totalQuantity.innerHTML = sumProductQuantity;
+getTotalQuantity();
 
 /*****************************************************************************************/
 /*****************************************************************************************/
 /******************************calcul du prix total***************************************/
+function getTotalPrice() {
+  /*Somme individuel de chaque produit en fonction de sa quantité, mise en place d'un tableau qui recupere les chiffres*/
+  let eachCartPrice = [];
+  for (let product in itemRecovery) {
+    totalEachProduct =
+      itemRecovery[product].price * itemRecovery[product].quantity;
+    eachCartPrice.push(totalEachProduct);
+  }
 
-/*Somme individuel de chaque produit en fonction de sa quantité, mise en place d'un tableau qui recupere les chiffres*/
-let eachCartPrice = [];
-for (let product in itemRecovery) {
-  totalEachProduct =
-    itemRecovery[product].price * itemRecovery[product].quantity;
-  eachCartPrice.push(totalEachProduct);
+  //Sommes des valeurs des produits individuel pour calculé le total du prix du panier
+  let totalPriceCart = 0;
+  for (let b = 0; b < eachCartPrice.length; b++) {
+    totalPriceCart += eachCartPrice[b];
+  }
+  console.log(
+    totalPriceCart
+  ); /**************************Prix total**************************/
+
+  //insertion du prix total dans le dom
+  let domTotalPrice = document.querySelector("#totalPrice");
+  domTotalPrice.innerHTML = totalPriceCart;
 }
-
-//Sommes des valeurs des produits individuel pour calculé le total du prix du panier
-let totalPriceCart = 0;
-for (let b = 0; b < eachCartPrice.length; b++) {
-  totalPriceCart += eachCartPrice[b];
-}
-console.log(
-  totalPriceCart
-); /**************************Prix total**************************/
-
-//insertion du prix total dans le dom
-let domTotalPrice = document.querySelector("#totalPrice");
-domTotalPrice.innerHTML = totalPriceCart;
+getTotalPrice();
 
 /*****************************************************************************************/
 /*****************************************************************************************/
 /************************Activation du boutton supprimer**********************************/
+const deleteProduct = () => {
+  let balises = document.querySelectorAll(".deleteItem");
 
-/*
-let deleteButton = document.getElementsByClassName("deleteItem");
-deleteButton = element.closest(".deleteItem").dataset;
-console.log(deleteButton);
+  //apres selection des bouton de suppression, ont boucle sur ces boutons
+  for (let x = 0; x < balises.length; x++) {
+    balises[x].addEventListener("click", (del) => {
+      del.preventDefault();
 
-const del = () => {
-  let test = document.closest(".deleteItem").dataset;
+      // Ont cible l'Id et la couleur des produits
+      let delId = del.target.closest(".cart__item").dataset.id;
+      let delColor = del.target.closest(".cart__item").dataset.color;
 
-  console.log(test);
-  test.addEventListener("click", (event) => {
-    event.preventDefault();
-    console.log(event);
-  });
+      //la methode .filter() va filtré les elements qui presente les condition suivantes
+      itemRecovery = itemRecovery.filter(
+        (el) => el.id !== delId || el.color !== delColor
+      );
+
+      //sauvegarde sur le local storage
+      localStorage.setItem("product", JSON.stringify(itemRecovery));
+
+      //rechargement de la page
+      window.location.reload();
+    });
+  }
 };
 
+deleteProduct();
 
-let newTable = Object.keys(itemRecovery).map(function (key) {
-  return [Number(key), itemRecovery[key]];
-});
-console.log(newTable);
+/******************************************************************************************/
+/******************************************************************************************/
+/*************************Modification de la quantité sur le panier************************/
+const changeQuantity = () => {
+  const baliseQuantity = document.querySelectorAll(".itemQuantity");
 
-for (let j = 0; j < deleteButton.length; j++) {
-  deleteButton[j].addEventListener("click", (event) => {
-    event.preventDefault();
-    console.log(event);
+  for (let y = 0; y < baliseQuantity.length; y++) {
+    baliseQuantity[y].addEventListener("change", (event) => {
+      event.preventDefault();
 
-    let suppr = newTable[j].splice(0, 7);
-  });
-}
+      //ciblage de l'ID du produit, de sa couleur, du produit déja selectionner, et du changement effectuer
+      let eventId = event.target.closest(".cart__item").dataset.id;
+      let eventColor = event.target.closest(".cart__item").dataset.color;
+      let savedProduct = itemRecovery[y].quantity;
+      let modif = Number(baliseQuantity[y].value);
 
+      const res = itemRecovery.find(
+        (el) =>
+          /*Ont cherche les element modifié qui sont different des element sauvegarder et si ils ont le meme ID et la meme couleurs*/
+          el.modif !== savedProduct &&
+          el.id === eventId &&
+          el.color === eventColor
+      );
 
+      res.quantity = modif;
+      itemRecovery[y].quantity = res.quantity;
 
+      // sauvegarde du tableau modifié sur le local storage
+      localStorage.setItem("product", JSON.stringify(itemRecovery));
 
+      //rechargement de la page
+      location.reload();
+    });
+  }
+};
+changeQuantity();
 
-
-let idProduitSelect = itemRecovery[j].id;
-    console.log(idProduitSelect);
-    let colorProduitSelect = itemRecovery[j].color;
-    console.log(colorProduitSelect);
-    if (
-      deleteButton[j].id === product_id &&
-      deleteButton[j].color != warningColor()
-    ) {
-    }
-
-
-
-deleteButton.addEventListener("click", (event) => {
-  event.preventDefault();
-  if(deleteButton[j].id === product_id && deleteButton[j].color != warningColor()){
-  const table = itemRecovery.stringy;
-  const deleteProduct = itemRecovery.filter((product) => itemRecovery[product]);
-});
-*/
+/********************************************************************************************/
+/********************************************************************************************/
+/********************************formulaire de contact***************************************/
