@@ -13,6 +13,7 @@ loading().then((data) => {
     .then((res) => res.json())
     .then((data) => {
       eachProductData = data;
+      console.log(eachProductData);
       let oneProductImg = document.createElement("img");
       document.querySelector(".item__img").appendChild(oneProductImg);
       oneProductImg.src = eachProductData.imageUrl;
@@ -44,49 +45,7 @@ loading().then((data) => {
       let quantityProducts = quantity.value;
       let colorsProducts = optionSelect.value;
 
-      //condition de limite de quantités
-      const limiteQuantity = () => {
-        if (quantityProducts >= 1 && quantityProducts <= 100) {
-          return quantityProducts;
-        } else {
-          return alert("Nombre d'article(s) (1-100)!");
-        }
-      };
-
-      //multiplication du prix en fonction de la quantité d'article selectionné
-      const priceProduct = () => {
-        if (quantityProducts >= 1 && quantityProducts <= 100) {
-          return eachProductData.price; //(* quantityProducts;)
-        } else {
-          return undefined;
-        }
-      };
-
-      //alerte si aucune couleurs d'article n'a été selectionné
-      const warningColor = () => {
-        if (colorsProducts != [""]) {
-          return colorsProducts;
-        } else {
-          return alert("veuillez choisir une couleur!");
-        }
-      };
-
-      //création d'un tableau qui prend en compte les article selectionner, la quantité, la couleur et le prix
-
-      let tableToAddLocalStorage = {
-        altImage: eachProductData.altTxt,
-        color: warningColor(),
-        description: eachProductData.description,
-        imageUrl: eachProductData.imageUrl,
-        name: eachProductData.name,
-        price: priceProduct(),
-        quantity: limiteQuantity(),
-        id: product_id,
-      };
-
-      console.log(tableToAddLocalStorage);
-
-      //fonction fenetre popup
+      //création d'une fenetre poPup de confirmation d'article
       const popupConfirmation = () => {
         if (
           window.confirm(
@@ -98,6 +57,28 @@ loading().then((data) => {
           window.location.href = "index.html";
         }
       };
+
+      // fenetre poPup en fonction des conditions
+      const productIsOk = () => {
+        if (
+          quantityProducts < 1 ||
+          quantityProducts > 100 ||
+          colorsProducts === ""
+        ) {
+          return alert("veuillez remplir correctement les champs demander!");
+        } else {
+          return popupConfirmation();
+        }
+      };
+
+      //création d'un tableau qui prend en compte les article selectionner, la quantité, la couleur et le prix
+
+      let tableToAddLocalStorage = {
+        color: colorsProducts,
+        quantity: quantityProducts,
+        id: product_id,
+      };
+      console.log(tableToAddLocalStorage);
 
       //initialisation du local sttorage "key value"/ conversion des donnée au format json , en objet javascript
       let tableProducts = JSON.parse(localStorage.getItem("product"));
@@ -112,27 +93,33 @@ loading().then((data) => {
       //si il y a deja un produit similaire de selectionner
       //si il n'y a pas encore de produit dans le local storage
 
-      if (tableProducts) {
-        const resultFind = tableProducts.find(
-          (element) =>
-            element.id === product_id && element.color === warningColor()
-        );
-        if (resultFind) {
-          resultFind.quantity =
-            parseInt(tableToAddLocalStorage.quantity) +
-            parseInt(resultFind.quantity);
-          //resultFind.price =
-          // parseInt(eachProductData.price) * parseInt(resultFind.quantity);
-          localStorage.setItem("product", JSON.stringify(tableProducts));
-          popupConfirmation();
+      if (
+        tableToAddLocalStorage.quantity >= 1 &&
+        tableToAddLocalStorage.quantity <= 100 &&
+        tableToAddLocalStorage.color != ""
+      ) {
+        if (tableProducts) {
+          const resultFind = tableProducts.find(
+            (element) =>
+              element.id === product_id && element.color === colorsProducts
+          );
+          if (resultFind) {
+            resultFind.quantity =
+              parseInt(tableToAddLocalStorage.quantity) +
+              parseInt(resultFind.quantity);
+            localStorage.setItem("product", JSON.stringify(tableProducts));
+            productIsOk();
+          } else {
+            pushArray();
+            productIsOk();
+          }
         } else {
+          tableProducts = [];
           pushArray();
-          popupConfirmation();
+          productIsOk();
         }
       } else {
-        tableProducts = [];
-        pushArray();
-        popupConfirmation();
+        productIsOk();
       }
     });
   };
