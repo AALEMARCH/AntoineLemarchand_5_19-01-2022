@@ -242,169 +242,211 @@ getTotalPrice();
 
 //************************************************formulaire de contact
 
-const commandButton = document.querySelector("#order");
-commandButton.addEventListener("click", (event) => {
-  event.preventDefault();
-  //récupération des valeurs du formulaire
-  const contact = {
-    firstName: document.querySelector("#firstName").value,
-    lastName: document.querySelector("#lastName").value,
-    address: document.querySelector("#address").value,
-    city: document.querySelector("#city").value,
-    email: document.querySelector("#email").value,
-  };
+const secureForm = () => {
+  // // récupération des input
+  // let inputSelect = document.querySelector(".cart__order__form__question");
+  // console.log(inputSelect);
 
-  console.log(contact);
+  //création et stockage des regexp
+  let nameRegex = /^[a-z]{2,20}$/i;
+  let lastNameRegex = /^[a-z ,.'-]+$/i;
+  let adressRegex = /^[a-z|0-9\s]+[a-z\s]+[\w\-?\s]*[\w]*$/i;
+  let cityRegex = /^[a-z]+(?:[\s-][a-z]+)*$/i;
+  let emailRegex =
+    /^[a-z0-9\-_]+[a-z0-9\.\-_]*@[a-z0-9\-_]{2,}\.[a-z\.\-_]+[a-z\-_]+$/i;
 
-  let products = [];
-  for (let k = 0; k < itemRecovery.length; k++) {
-    products.push(itemRecovery[k].id);
+  // stockage des input
+  let firstName = document.getElementById("firstName");
+  let lastName = document.getElementById("lastName");
+  let address = document.getElementById("address");
+  let city = document.getElementById("city");
+  let email = document.getElementById("email");
+
+  //fonction de désactivation du bouton d'envoie du formulaire
+  function disableSubmit(disabled) {
+    if (disabled) {
+      document.getElementById("order").setAttribute("disabled", true);
+    } else {
+      document.getElementById("order").removeAttribute("disabled", false);
+    }
   }
 
-  // Mise en place de l'objet formValues dans le local storage
-  localStorage.setItem("contact", JSON.stringify(contact));
-
-  // objet formulaire et produit a envoyer ver le server
-  const objectSendServer = {
-    products,
-    contact,
+  const stopForm = () => {
+    if (firstName.value == undefined) {
+      document.getElementById("order").setAttribute("disabled", true);
+    }
   };
-  console.log(objectSendServer);
+  stopForm();
+  //validation du prenom
+  const nameValidation = () => {
+    return document.getElementById("firstNameErrorMsg");
+  };
 
-  //Envoie au serveur
-  function sendForm() {
-    const send = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(objectSendServer),
+  firstName.addEventListener("input", (e) => {
+    if (nameRegex.test(e.target.value)) {
+      firstName.style.background = "white";
+      nameValidation().innerText = "Prenom valide";
+      disableSubmit(false);
+    } else {
+      firstName.style.background = "pink";
+      nameValidation().innerText = "Prenom invalide";
+      disableSubmit(true);
+    }
+  });
+
+  //validation du nom
+  const lastNameValidation = () => {
+    return document.getElementById("lastNameErrorMsg");
+  };
+
+  lastName.addEventListener("input", (e) => {
+    if (lastNameRegex.test(e.target.value)) {
+      lastName.style.background = "white";
+      lastNameValidation().innerText = "Nom valide";
+      disableSubmit(false);
+    } else {
+      lastName.style.background = "pink";
+      lastNameValidation().innerText = "Nom invalide";
+      disableSubmit(true);
+    }
+  });
+
+  //validation de l'adresse
+  const adressValidation = () => {
+    return document.getElementById("addressErrorMsg");
+  };
+
+  address.addEventListener("input", (e) => {
+    if (adressRegex.test(e.target.value)) {
+      address.style.background = "white";
+      adressValidation().innerText = "Adresse valide";
+      disableSubmit(false);
+    } else {
+      address.style.background = "pink";
+      adressValidation().innerText = "Adresse invalide";
+      disableSubmit(true);
+    }
+  });
+
+  //validation de la ville
+  const cityValidation = () => {
+    return document.getElementById("cityErrorMsg");
+  };
+
+  city.addEventListener("input", (e) => {
+    if (cityRegex.test(e.target.value)) {
+      city.style.background = "white";
+      cityValidation().innerText = "Nom de ville valide";
+      disableSubmit(false);
+    } else {
+      city.style.background = "pink";
+      cityValidation().innerText = "Nom de ville invalide";
+      disableSubmit(true);
+    }
+  });
+
+  //validation de l'adresse email
+  const emailValidation = () => {
+    return document.getElementById("emailErrorMsg");
+  };
+
+  email.addEventListener("input", (e) => {
+    if (emailRegex.test(e.target.value)) {
+      email.style.background = "white";
+      emailValidation().innerText = "Adresse email valide";
+      disableSubmit(false);
+    } else {
+      email.style.background = "pink";
+      emailValidation().innerText = "Adresse email invalide";
+      disableSubmit(true);
+    }
+  });
+};
+secureForm();
+
+const postForm = () => {
+  const commandButton = document.querySelector("#order");
+  commandButton.addEventListener("click", (event) => {
+    event.preventDefault();
+
+    //récupération des valeurs du formulaire
+    const contact = {
+      firstName: document.querySelector("#firstName").value,
+      lastName: document.querySelector("#lastName").value,
+      address: document.querySelector("#address").value,
+      city: document.querySelector("#city").value,
+      email: document.querySelector("#email").value,
     };
 
-    fetch("http://localhost:3000/api/products/order", send)
-      .then(async (res) => {
-        console.log(res);
-        const contentData = await res.json();
-        console.log(contentData);
-      })
-      .catch((error) => console.log(error));
-  }
-  sendForm();
-});
+    console.log(contact);
 
+    // Mise en place du tableau de produits desttiné au server
+    let products = [];
+    for (let k = 0; k < itemRecovery.length; k++) {
+      products.push(itemRecovery[k].id);
+    }
+
+    // Mise en place de l'objet formValues dans le local storage
+    localStorage.setItem("contact", JSON.stringify(contact));
+
+    // objet formulaire et produit a envoyer ver le server
+    const objectSendServer = {
+      products,
+      contact,
+    };
+    console.log(objectSendServer);
+
+    //Envoie au serveur
+    function sendForm() {
+      const send = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(objectSendServer),
+      };
+
+      fetch("http://localhost:3000/api/products/order", send)
+        .then(async (res) => {
+          console.log(res);
+          const contentData = await res.json();
+          console.log(contentData);
+        })
+        .catch((error) => console.log(error));
+    }
+    sendForm();
+  });
+};
+postForm();
+
+/*
 //récupération key du formulaire
 const dataForm = localStorage.getItem("contact");
 
 //convertion objet JSON en objet javascript
 const dataFormObject = JSON.parse(dataForm);
 
+const test = () => {
+  if (order) {
+    const writeInput = (input) => {
+      document.querySelector(`#${input}`).value = dataFormObject[input];
+    };
+
+    writeInput("firstName");
+    writeInput("lastName");
+    writeInput("address");
+    writeInput("city");
+    writeInput("email");
+  }
+};
+test();
+*/
 //mettre les valeurs du local storage dans les champs du formulaire
 
+/*
 document.querySelector("#firstName").value = dataFormObject.firstName;
 document.querySelector("#lastName").value = dataFormObject.lastName;
 document.querySelector("#address").value = dataFormObject.address;
 document.querySelector("#city").value = dataFormObject.city;
 document.querySelector("#email").value = dataFormObject.email;
-
-//validation du formulaire
-
-function disableSubmit(disabled) {
-  if (disabled) {
-    document.getElementById("order").setAttribute("disabled", true);
-  } else {
-    document.getElementById("order").removeAttribute("disabled");
-  }
-}
-
-//stockage des regex
-let nameRegex = /^[a-z]{2,20}$/i;
-let lastNameRegex = /^[a-z ,.'-]+$/i;
-let adressRegex = /^[a-z|0-9\s]+[a-z\s]+[\w\-?\s]*[\w]*$/i;
-let cityRegex = /^[a-z]+(?:[\s-][a-z]+)*$/i;
-let emailRegex =
-  /^[a-z0-9\-_]+[a-z0-9\.\-_]*@[a-z0-9\-_]{2,}\.[a-z\.\-_]+[a-z\-_]+$/i;
-
-//validation du prenom
-const nameValidation = () => {
-  return document.getElementById("firstNameErrorMsg");
-};
-
-document.getElementById("firstName").addEventListener("input", (e) => {
-  if (nameRegex.test(e.target.value)) {
-    document.getElementById("firstName").style.background = "white";
-    nameValidation().innerText = "Prenom valide";
-    disableSubmit(true);
-  } else {
-    document.getElementById("firstName").style.background = "pink";
-    nameValidation().innerText = "Prenom invalide";
-    disableSubmit(false);
-  }
-});
-
-//validation du nom
-const lastNameValidation = () => {
-  return document.getElementById("lastNameErrorMsg");
-};
-
-document.getElementById("lastName").addEventListener("input", (e) => {
-  if (lastNameRegex.test(e.target.value)) {
-    document.getElementById("lastName").style.background = "white";
-    lastNameValidation().innerText = "Nom valide";
-    disableSubmit(true);
-  } else {
-    document.getElementById("lastName").style.background = "pink";
-    lastNameValidation().innerText = "Nom invalide";
-    disableSubmit(false);
-  }
-});
-
-//validation de l'adresse
-const adressValidation = () => {
-  return document.getElementById("addressErrorMsg");
-};
-
-document.getElementById("address").addEventListener("input", (e) => {
-  if (adressRegex.test(e.target.value)) {
-    document.getElementById("address").style.background = "white";
-    adressValidation().innerText = "Adresse valide";
-    disableSubmit(true);
-  } else {
-    document.getElementById("address").style.background = "pink";
-    adressValidation().innerText = "Adresse invalide";
-    disableSubmit(false);
-  }
-});
-
-//validation de la ville
-const cityValidation = () => {
-  return document.getElementById("cityErrorMsg");
-};
-
-document.getElementById("city").addEventListener("input", (e) => {
-  if (cityRegex.test(e.target.value)) {
-    document.getElementById("city").style.background = "white";
-    cityValidation().innerText = "Nom de ville valide";
-    disableSubmit(true);
-  } else {
-    document.getElementById("city").style.background = "pink";
-    cityValidation().innerText = "Nom de ville invalide";
-    disableSubmit(false);
-  }
-});
-
-//validation de l'adresse email
-const emailValidation = () => {
-  return document.getElementById("emailErrorMsg");
-};
-
-document.getElementById("email").addEventListener("input", (e) => {
-  if (emailRegex.test(e.target.value)) {
-    document.getElementById("email").style.background = "white";
-    emailValidation().innerText = "Adresse email valide";
-    disableSubmit(true);
-  } else {
-    document.getElementById("email").style.background = "pink";
-    emailValidation().innerText = "Adresse email invalide";
-    disableSubmit(false);
-  }
-});
+*/
