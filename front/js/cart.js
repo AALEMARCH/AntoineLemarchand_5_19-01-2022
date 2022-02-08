@@ -242,11 +242,8 @@ getTotalPrice();
 
 //************************************************formulaire de contact
 
+//fonction de sécurisation du formulaire
 const secureForm = () => {
-  // // récupération des input
-  // let inputSelect = document.querySelector(".cart__order__form__question");
-  // console.log(inputSelect);
-
   //création et stockage des regexp
   let nameRegex = /^[a-z]{2,20}$/i;
   let lastNameRegex = /^[a-z ,.'-]+$/i;
@@ -364,6 +361,7 @@ const secureForm = () => {
 };
 secureForm();
 
+//fonction d'envoie du formulaire
 const postForm = () => {
   const commandButton = document.querySelector("#order");
   commandButton.addEventListener("click", (event) => {
@@ -411,6 +409,7 @@ const postForm = () => {
           console.log(res);
           const contentData = await res.json();
           console.log(contentData);
+          window.location.href = `confirmation.html?orderId=${contentData.orderId}`;
         })
         .catch((error) => console.log(error));
     }
@@ -418,35 +417,3 @@ const postForm = () => {
   });
 };
 postForm();
-
-/*
-//récupération key du formulaire
-const dataForm = localStorage.getItem("contact");
-
-//convertion objet JSON en objet javascript
-const dataFormObject = JSON.parse(dataForm);
-
-const test = () => {
-  if (order) {
-    const writeInput = (input) => {
-      document.querySelector(`#${input}`).value = dataFormObject[input];
-    };
-
-    writeInput("firstName");
-    writeInput("lastName");
-    writeInput("address");
-    writeInput("city");
-    writeInput("email");
-  }
-};
-test();
-*/
-//mettre les valeurs du local storage dans les champs du formulaire
-
-/*
-document.querySelector("#firstName").value = dataFormObject.firstName;
-document.querySelector("#lastName").value = dataFormObject.lastName;
-document.querySelector("#address").value = dataFormObject.address;
-document.querySelector("#city").value = dataFormObject.city;
-document.querySelector("#email").value = dataFormObject.email;
-*/
