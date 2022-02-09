@@ -6,7 +6,6 @@ const cartDisplay = () => {
   if (itemRecovery === null) {
     alert("votre panier est vide");
     itemRecovery = [];
-    console.log(itemRecovery);
   } else if (itemRecovery) {
     for (let product in itemRecovery) {
       loading().then((data) => {
@@ -268,12 +267,6 @@ const secureForm = () => {
     }
   }
 
-  const stopForm = () => {
-    if (firstName.value == undefined) {
-      document.getElementById("order").setAttribute("disabled", true);
-    }
-  };
-  stopForm();
   //validation du prenom
   const nameValidation = () => {
     return document.getElementById("firstNameErrorMsg");
@@ -409,10 +402,15 @@ const postForm = () => {
           console.log(res);
           const contentData = await res.json();
           console.log(contentData);
-          window.location.href = `confirmation.html?orderId=${contentData.orderId}`;
+          if (contentData.contact !== undefined) {
+            window.location.href = `confirmation.html?orderId=${contentData.orderId}`;
+          } else {
+            alert("merci de remplir le formulaire de contact");
+          }
         })
         .catch((error) => console.log(error));
     }
+
     sendForm();
   });
 };
