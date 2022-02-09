@@ -279,7 +279,7 @@ const secureForm = () => {
     return document.getElementById("firstNameErrorMsg");
   };
 
-  firstName.addEventListener("input", (e) => {
+  firstName.addEventListener("change", (e) => {
     if (nameRegex.test(e.target.value)) {
       firstName.style.background = "white";
       nameValidation().innerText = "Prenom valide";
@@ -296,7 +296,7 @@ const secureForm = () => {
     return document.getElementById("lastNameErrorMsg");
   };
 
-  lastName.addEventListener("input", (e) => {
+  lastName.addEventListener("change", (e) => {
     if (lastNameRegex.test(e.target.value)) {
       lastName.style.background = "white";
       lastNameValidation().innerText = "Nom valide";
@@ -313,7 +313,7 @@ const secureForm = () => {
     return document.getElementById("addressErrorMsg");
   };
 
-  address.addEventListener("input", (e) => {
+  address.addEventListener("change", (e) => {
     if (adressRegex.test(e.target.value)) {
       address.style.background = "white";
       adressValidation().innerText = "Adresse valide";
@@ -330,7 +330,7 @@ const secureForm = () => {
     return document.getElementById("cityErrorMsg");
   };
 
-  city.addEventListener("input", (e) => {
+  city.addEventListener("change", (e) => {
     if (cityRegex.test(e.target.value)) {
       city.style.background = "white";
       cityValidation().innerText = "Nom de ville valide";
@@ -347,7 +347,7 @@ const secureForm = () => {
     return document.getElementById("emailErrorMsg");
   };
 
-  email.addEventListener("input", (e) => {
+  email.addEventListener("change", (e) => {
     if (emailRegex.test(e.target.value)) {
       email.style.background = "white";
       emailValidation().innerText = "Adresse email valide";
