@@ -5,9 +5,11 @@ let itemRecovery = JSON.parse(localStorage.getItem("product"));
 const cartDisplay = () => {
   if (itemRecovery === null) {
     alert("votre panier est vide");
+    window.location.href = "index.html";
     itemRecovery = [];
   } else if (itemRecovery) {
     for (let product in itemRecovery) {
+      // fetch afin de comparer les infos du ls aux infos produits
       loading().then((data) => {
         config = data;
         fetch(config.host + `/api/products/${itemRecovery[product].id}`)
@@ -144,6 +146,7 @@ function getTotalQuantity() {
   }
 
   //insertion de la quantité total dans le dom
+
   let totalQuantity = document.querySelector("#totalQuantity");
   totalQuantity.innerHTML = sumProductQuantity;
 }
@@ -222,6 +225,15 @@ function getTotalPrice() {
                 );
 
                 res.quantity = modif;
+
+                //limite de quantité entre 1 et 100
+                if (res.quantity < 1 || res.quantity > 100) {
+                  alert(
+                    "veuillez selectionnez une quantité entre 1 et 100 ou supprimer le produit"
+                  );
+                  res.quantity = 1;
+                }
+
                 itemRecovery[y].quantity = res.quantity;
 
                 // sauvegarde du tableau modifié sur le local storage
@@ -272,14 +284,18 @@ const secureForm = () => {
     return document.getElementById("firstNameErrorMsg");
   };
 
+  //écoute du changement sur l'input
   firstName.addEventListener("change", (e) => {
+    //si le regexp ciblé n'est pas conforme, ont désactive l'envoie du formulaire et ont met un message de validation
     if (nameRegex.test(e.target.value)) {
       firstName.style.background = "white";
       nameValidation().innerText = "Prenom valide";
+      nameValidation().style.color = "lightgreen";
       disableSubmit(false);
     } else {
       firstName.style.background = "pink";
       nameValidation().innerText = "Prenom invalide";
+      nameValidation().style.color = "#fbbcbc";
       disableSubmit(true);
     }
   });
@@ -293,10 +309,12 @@ const secureForm = () => {
     if (lastNameRegex.test(e.target.value)) {
       lastName.style.background = "white";
       lastNameValidation().innerText = "Nom valide";
+      lastNameValidation().style.color = "lightgreen";
       disableSubmit(false);
     } else {
       lastName.style.background = "pink";
       lastNameValidation().innerText = "Nom invalide";
+      lastNameValidation().style.color = "#fbbcbc";
       disableSubmit(true);
     }
   });
@@ -310,10 +328,12 @@ const secureForm = () => {
     if (adressRegex.test(e.target.value)) {
       address.style.background = "white";
       adressValidation().innerText = "Adresse valide";
+      adressValidation().style.color = "lightgreen";
       disableSubmit(false);
     } else {
       address.style.background = "pink";
       adressValidation().innerText = "Adresse invalide";
+      adressValidation().style.color = "#fbbcbc";
       disableSubmit(true);
     }
   });
@@ -327,10 +347,12 @@ const secureForm = () => {
     if (cityRegex.test(e.target.value)) {
       city.style.background = "white";
       cityValidation().innerText = "Nom de ville valide";
+      cityValidation().style.color = "lightgreen";
       disableSubmit(false);
     } else {
       city.style.background = "pink";
       cityValidation().innerText = "Nom de ville invalide";
+      cityValidation().style.color = "#fbbcbc";
       disableSubmit(true);
     }
   });
@@ -344,10 +366,12 @@ const secureForm = () => {
     if (emailRegex.test(e.target.value)) {
       email.style.background = "white";
       emailValidation().innerText = "Adresse email valide";
+      emailValidation().style.color = "lightgreen";
       disableSubmit(false);
     } else {
       email.style.background = "pink";
       emailValidation().innerText = "Adresse email invalide";
+      emailValidation().style.color = "#fbbcbc";
       disableSubmit(true);
     }
   });
@@ -372,19 +396,28 @@ const postForm = () => {
     console.log(contact);
 
     // Mise en place du tableau de produits desttiné au server
+    // let products = [""];
     let products = [];
+
     for (let k = 0; k < itemRecovery.length; k++) {
       products.push(itemRecovery[k].id);
     }
+    //si le tableau est vide, supprssion du tableau du local storage
+    if (products.length === 0) {
+      localStorage.removeItem(product);
+    }
+    console.log(products);
 
-    // Mise en place de l'objet formValues dans le local storage
+    // Mise en place de l'objet contact dans le local storage
     localStorage.setItem("contact", JSON.stringify(contact));
 
     // objet formulaire et produit a envoyer ver le server
+
     const objectSendServer = {
       products,
       contact,
     };
+
     console.log(objectSendServer);
 
     //Envoie au serveur
@@ -399,9 +432,8 @@ const postForm = () => {
 
       fetch("http://localhost:3000/api/products/order", send)
         .then(async (res) => {
-          console.log(res);
           const contentData = await res.json();
-          console.log(contentData);
+
           if (contentData.contact !== undefined) {
             window.location.href = `confirmation.html?orderId=${contentData.orderId}`;
           } else {
