@@ -1,3 +1,4 @@
+// Ont appel l'API et ont fait un fetch afin d'obtenir en reponse les donné produit de l'api
 loading().then((data) => {
   config = data;
   fetch(config.host + "/api/products")

@@ -5,5 +5,6 @@ const orderIdRetrieval = () => {
   const urlSearchParams = new URLSearchParams(url_orderId);
   const orderId = urlSearchParams.get("orderId");
   document.getElementById("orderId").textContent = orderId;
+  localStorage.clear();
 };
 orderIdRetrieval();

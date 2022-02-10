@@ -396,9 +396,9 @@ const postForm = () => {
     console.log(contact);
 
     // Mise en place du tableau de produits desttiné au server
-    // let products = [""];
     let products = [];
 
+    // ont boucle sur le tableau du ls afin de ressortir les id
     for (let k = 0; k < itemRecovery.length; k++) {
       products.push(itemRecovery[k].id);
     }
@@ -420,7 +420,7 @@ const postForm = () => {
 
     console.log(objectSendServer);
 
-    //Envoie au serveur
+    //fonction de configuration du POST pour l'envoie vers le server
     function sendForm() {
       const send = {
         method: "POST",
