@@ -152,18 +152,17 @@ function getTotalQuantity() {
 }
 getTotalQuantity();
 
-//*******************************************Calcul du prix total
-
 // Ciblage des produit du local storage a l'aide d'un fetch et d'une comparaison avec les donnée API
-function getTotalPrice() {
-  let totalPriceCart = 0;
-  for (let i = 0; i < itemRecovery.length; i++) {
-    loading().then((data) => {
-      config = data;
-      fetch(config.host + `/api/products/${itemRecovery[i].id}`)
-        .then((res) => res.json())
-        .catch((err) => console.log(err))
-        .then((data) => {
+let totalPriceCart = 0;
+for (let i = 0; i < itemRecovery.length; i++) {
+  loading().then((data) => {
+    config = data;
+    fetch(config.host + `/api/products/${itemRecovery[i].id}`)
+      .then((res) => res.json())
+      .catch((err) => console.log(err))
+      .then((data) => {
+        //**********************************************calcul du prix total des produits selectionner
+        function getTotalPrice() {
           // ont incrémente la variable dedié au prix total, avec une multiplication du prix API par la quantité local storage
           totalPriceCart +=
             Number(data.price) * Number(itemRecovery[i].quantity);
@@ -171,85 +170,86 @@ function getTotalPrice() {
           //insertion du prix total dans le dom
           let domTotalPrice = document.querySelector("#totalPrice");
           domTotalPrice.innerHTML = totalPriceCart;
+        }
 
-          //*********************************************************Activation du boutton supprimer
-          const deleteProduct = () => {
-            let balises = document.querySelectorAll(".deleteItem");
+        getTotalPrice();
 
-            //apres selection des bouton de suppression, ont boucle sur ces boutons
-            for (let x = 0; x < balises.length; x++) {
-              balises[x].addEventListener("click", (del) => {
-                del.preventDefault();
+        //*********************************************************Activation du boutton supprimer
+        const deleteProduct = () => {
+          let balises = document.querySelectorAll(".deleteItem");
 
-                // Ont cible l'Id et la couleur des produits
-                let delId = del.target.closest(".cart__item").dataset.id;
-                let delColor = del.target.closest(".cart__item").dataset.color;
+          //apres selection des bouton de suppression, ont boucle sur ces boutons
+          for (let x = 0; x < balises.length; x++) {
+            balises[x].addEventListener("click", (del) => {
+              del.preventDefault();
 
-                //la methode .filter() va filtré les elements qui presente les condition suivantes
-                itemRecovery = itemRecovery.filter(
-                  (el) => el.id !== delId || el.color !== delColor
+              // Ont cible l'Id et la couleur des produits
+              let delId = del.target.closest(".cart__item").dataset.id;
+              let delColor = del.target.closest(".cart__item").dataset.color;
+
+              //la methode .filter() va filtré les elements qui presente les condition suivantes
+              itemRecovery = itemRecovery.filter(
+                (el) => el.id !== delId || el.color !== delColor
+              );
+
+              //sauvegarde sur le local storage
+              localStorage.setItem("product", JSON.stringify(itemRecovery));
+
+              //rechargement de la page
+              window.location.reload();
+            });
+          }
+        };
+
+        deleteProduct();
+
+        //**********************************************Modification de la quantité sur le panier
+        const changeQuantity = () => {
+          const baliseQuantity = document.querySelectorAll(".itemQuantity");
+
+          for (let y = 0; y < baliseQuantity.length; y++) {
+            baliseQuantity[y].addEventListener("change", (event) => {
+              event.preventDefault();
+
+              //ciblage de l'ID du produit, de sa couleur, du produit déja selectionner, et du changement effectuer
+              let eventId = event.target.closest(".cart__item").dataset.id;
+              let eventColor =
+                event.target.closest(".cart__item").dataset.color;
+              let savedProduct = itemRecovery[y].quantity;
+              let modif = Number(baliseQuantity[y].value);
+
+              const res = itemRecovery.find(
+                (el) =>
+                  //Ont cherche les element modifié qui sont different des element sauvegarder et si ils ont le meme ID et la meme couleurs
+                  el.modif !== savedProduct &&
+                  el.id === eventId &&
+                  el.color === eventColor
+              );
+
+              res.quantity = modif;
+
+              //limite de quantité entre 1 et 100
+              if (res.quantity < 1 || res.quantity > 100) {
+                alert(
+                  "veuillez selectionnez une quantité entre 1 et 100 ou supprimer le produit"
                 );
+                res.quantity = 1;
+              }
 
-                //sauvegarde sur le local storage
-                localStorage.setItem("product", JSON.stringify(itemRecovery));
+              itemRecovery[y].quantity = res.quantity;
 
-                //rechargement de la page
-                window.location.reload();
-              });
-            }
-          };
+              // sauvegarde du tableau modifié sur le local storage
+              localStorage.setItem("product", JSON.stringify(itemRecovery));
 
-          deleteProduct();
-
-          //**********************************************Modification de la quantité sur le panier
-          const changeQuantity = () => {
-            const baliseQuantity = document.querySelectorAll(".itemQuantity");
-
-            for (let y = 0; y < baliseQuantity.length; y++) {
-              baliseQuantity[y].addEventListener("change", (event) => {
-                event.preventDefault();
-
-                //ciblage de l'ID du produit, de sa couleur, du produit déja selectionner, et du changement effectuer
-                let eventId = event.target.closest(".cart__item").dataset.id;
-                let eventColor =
-                  event.target.closest(".cart__item").dataset.color;
-                let savedProduct = itemRecovery[y].quantity;
-                let modif = Number(baliseQuantity[y].value);
-
-                const res = itemRecovery.find(
-                  (el) =>
-                    //Ont cherche les element modifié qui sont different des element sauvegarder et si ils ont le meme ID et la meme couleurs
-                    el.modif !== savedProduct &&
-                    el.id === eventId &&
-                    el.color === eventColor
-                );
-
-                res.quantity = modif;
-
-                //limite de quantité entre 1 et 100
-                if (res.quantity < 1 || res.quantity > 100) {
-                  alert(
-                    "veuillez selectionnez une quantité entre 1 et 100 ou supprimer le produit"
-                  );
-                  res.quantity = 1;
-                }
-
-                itemRecovery[y].quantity = res.quantity;
-
-                // sauvegarde du tableau modifié sur le local storage
-                localStorage.setItem("product", JSON.stringify(itemRecovery));
-
-                //rechargement de la page
-                window.location.reload();
-              });
-            }
-          };
-          changeQuantity();
-        });
-    });
-  }
+              //rechargement de la page
+              window.location.reload();
+            });
+          }
+        };
+        changeQuantity();
+      });
+  });
 }
-getTotalPrice();
 
 //************************************************formulaire de contact
 
