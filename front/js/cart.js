@@ -5,7 +5,6 @@ let itemRecovery = JSON.parse(localStorage.getItem("product"));
 const cartDisplay = () => {
   if (itemRecovery === null) {
     alert("votre panier est vide");
-    window.location.href = "index.html";
     itemRecovery = [];
   } else if (itemRecovery) {
     for (let product in itemRecovery) {
@@ -45,12 +44,12 @@ const cartDisplay = () => {
               itemImage.src = data.imageUrl;
               itemImage.alt = data.altTxt;
 
-              //création du contenu des  produit
+              //création du contenu des produits
               let itemDivContent = document.createElement("div");
               itemArticle.appendChild(itemDivContent);
               itemDivContent.setAttribute("class", "cart__item__content");
 
-              //création div a l'interieur du contenu des produit
+              //création div a l'intérieur du contenu des produits
               let itemDivContentDescription = document.createElement("div");
               itemDivContent.appendChild(itemDivContentDescription);
               itemDivContentDescription.setAttribute(
@@ -81,7 +80,7 @@ const cartDisplay = () => {
                 "cart__item__content__settings"
               );
 
-              //Création div pour inséré la quantité
+              //Création div pour insérer la quantité
               let itemDivSettingQuantity = document.createElement("div");
               itemDivSettings.appendChild(itemDivSettingQuantity);
               itemDivSettingQuantity.setAttribute(
@@ -131,28 +130,28 @@ cartDisplay();
 //************************************calcul de la quantité total
 
 function getTotalQuantity() {
-  //récupération des quantité de chaques produit présent dans le local storage
+  //récupération des quantités de chaque produit présent dans le local storage
   let quantityCart = [];
   for (let a = 0; a < itemRecovery.length; a++) {
     let totalQuantityCart = itemRecovery[a].quantity;
     quantityCart.push(totalQuantityCart);
   }
 
-  //convertion du tableau de chaine "quantityCart", en nombre entiers et addition des valeurs de produit individuel
+  //conversion du tableau de chaine "quantityCart", en nombre entier et addition des valeurs de produit individuelles
   let sumProductQuantity = 0;
   for (let e = 0; e < quantityCart.length; e++) {
     quantityCart[e] = parseInt(quantityCart[e]);
     sumProductQuantity += quantityCart[e];
   }
 
-  //insertion de la quantité total dans le dom
+  //insertion de la quantité totale dans le dom
 
   let totalQuantity = document.querySelector("#totalQuantity");
   totalQuantity.innerHTML = sumProductQuantity;
 }
 getTotalQuantity();
 
-// Ciblage des produit du local storage a l'aide d'un fetch et d'une comparaison avec les donnée API
+// Ciblage des produit du local storage a l'aide d'un fetch et d'une comparaison avec les données API
 let totalPriceCart = 0;
 for (let i = 0; i < itemRecovery.length; i++) {
   loading().then((data) => {
@@ -161,9 +160,9 @@ for (let i = 0; i < itemRecovery.length; i++) {
       .then((res) => res.json())
       .catch((err) => console.log(err))
       .then((data) => {
-        //**********************************************calcul du prix total des produits selectionner
+        //**********************************************calcul du prix total des produits selectionnés
         function getTotalPrice() {
-          // ont incrémente la variable dedié au prix total, avec une multiplication du prix API par la quantité local storage
+          // on incrémente la variable dédié au prix total, avec une multiplication du prix API par la quantité local storage
           totalPriceCart +=
             Number(data.price) * Number(itemRecovery[i].quantity);
 
@@ -174,11 +173,11 @@ for (let i = 0; i < itemRecovery.length; i++) {
 
         getTotalPrice();
 
-        //*********************************************************Activation du boutton supprimer
+        //*********************************************************Activation du boutton supprimé
         const deleteProduct = () => {
           let balises = document.querySelectorAll(".deleteItem");
 
-          //apres selection des bouton de suppression, ont boucle sur ces boutons
+          //apres sélection des boutons de suppression, ont boucle sur ces boutons
           for (let x = 0; x < balises.length; x++) {
             balises[x].addEventListener("click", (del) => {
               del.preventDefault();
@@ -187,7 +186,7 @@ for (let i = 0; i < itemRecovery.length; i++) {
               let delId = del.target.closest(".cart__item").dataset.id;
               let delColor = del.target.closest(".cart__item").dataset.color;
 
-              //la methode .filter() va filtré les elements qui presente les condition suivantes
+              //la méthode .filter() va filtrer les éléments qui présente les conditions suivantes
               itemRecovery = itemRecovery.filter(
                 (el) => el.id !== delId || el.color !== delColor
               );
@@ -211,7 +210,7 @@ for (let i = 0; i < itemRecovery.length; i++) {
             baliseQuantity[y].addEventListener("change", (event) => {
               event.preventDefault();
 
-              //ciblage de l'ID du produit, de sa couleur, du produit déja selectionner, et du changement effectuer
+              //ciblage de l'ID du produit, de sa couleur, du produit déja sélectionner, et du changement effectuer
               let eventId = event.target.closest(".cart__item").dataset.id;
               let eventColor =
                 event.target.closest(".cart__item").dataset.color;
@@ -220,7 +219,7 @@ for (let i = 0; i < itemRecovery.length; i++) {
 
               const res = itemRecovery.find(
                 (el) =>
-                  //Ont cherche les element modifié qui sont different des element sauvegarder et si ils ont le meme ID et la meme couleurs
+                  //On cherche les elements modifiés qui sont different des elements sauvegarder et si ils ont le meme ID et la même couleur
                   el.modif !== savedProduct &&
                   el.id === eventId &&
                   el.color === eventColor
@@ -228,7 +227,7 @@ for (let i = 0; i < itemRecovery.length; i++) {
 
               res.quantity = modif;
 
-              //limite de quantité entre 1 et 100
+              //limite de quantité entre 1 et 100 si l'utilisateur decide de modifier l'input sans passer par les fleches mais directement via son pavé numérique
               if (res.quantity < 1 || res.quantity > 100) {
                 alert(
                   "veuillez selectionnez une quantité entre 1 et 100 ou supprimer le produit"
@@ -263,30 +262,34 @@ const secureForm = () => {
   let emailRegex =
     /^[a-z0-9\-_]+[a-z0-9\.\-_]*@[a-z0-9\-_]{2,}\.[a-z\.\-_]+[a-z\-_]+$/i;
 
-  // stockage des input
+  // stockage des inputs
   let firstName = document.getElementById("firstName");
   let lastName = document.getElementById("lastName");
   let address = document.getElementById("address");
   let city = document.getElementById("city");
   let email = document.getElementById("email");
+  let button = document.getElementById("order");
 
-  //fonction de désactivation du bouton d'envoie du formulaire
+  //fonction de désactivation du bouton d'envoi du formulaire
   function disableSubmit(disabled) {
     if (disabled) {
-      document.getElementById("order").setAttribute("disabled", true);
+      button.setAttribute("disabled", true);
+      button.style.opacity = "0.55";
     } else {
-      document.getElementById("order").removeAttribute("disabled", false);
+      button.removeAttribute("disabled", false);
+      button.style.opacity = "1";
     }
   }
 
-  //validation du prenom
+  //validation du prénom
   const nameValidation = () => {
     return document.getElementById("firstNameErrorMsg");
   };
 
   //écoute du changement sur l'input
   firstName.addEventListener("change", (e) => {
-    //si le regexp ciblé n'est pas conforme, ont désactive l'envoie du formulaire et ont met un message de validation
+    //e.preventDefault();
+    //si le regexp ciblé n'est pas conforme, on désactive l'envoi du formulaire et on met un message de validation
     if (nameRegex.test(e.target.value)) {
       firstName.style.background = "white";
       nameValidation().innerText = "Prenom valide";
@@ -306,6 +309,7 @@ const secureForm = () => {
   };
 
   lastName.addEventListener("change", (e) => {
+    //e.preventDefault();
     if (lastNameRegex.test(e.target.value)) {
       lastName.style.background = "white";
       lastNameValidation().innerText = "Nom valide";
@@ -325,6 +329,7 @@ const secureForm = () => {
   };
 
   address.addEventListener("change", (e) => {
+    //e.preventDefault();
     if (adressRegex.test(e.target.value)) {
       address.style.background = "white";
       adressValidation().innerText = "Adresse valide";
@@ -344,6 +349,7 @@ const secureForm = () => {
   };
 
   city.addEventListener("change", (e) => {
+    //e.preventDefault();
     if (cityRegex.test(e.target.value)) {
       city.style.background = "white";
       cityValidation().innerText = "Nom de ville valide";
@@ -363,6 +369,7 @@ const secureForm = () => {
   };
 
   email.addEventListener("change", (e) => {
+    //e.preventDefault();
     if (emailRegex.test(e.target.value)) {
       email.style.background = "white";
       emailValidation().innerText = "Adresse email valide";
@@ -378,49 +385,56 @@ const secureForm = () => {
 };
 secureForm();
 
-//fonction d'envoie du formulaire
-const postForm = () => {
-  const commandButton = document.querySelector("#order");
-  commandButton.addEventListener("click", (event) => {
-    event.preventDefault();
+const commandButton = document.querySelector("#order");
+commandButton.addEventListener("click", (event) => {
+  event.preventDefault();
 
-    //récupération des valeurs du formulaire
-    const contact = {
-      firstName: document.querySelector("#firstName").value,
-      lastName: document.querySelector("#lastName").value,
-      address: document.querySelector("#address").value,
-      city: document.querySelector("#city").value,
-      email: document.querySelector("#email").value,
-    };
+  //récupération des valeurs du formulaire
+  const contact = {
+    firstName: document.querySelector("#firstName").value,
+    lastName: document.querySelector("#lastName").value,
+    address: document.querySelector("#address").value,
+    city: document.querySelector("#city").value,
+    email: document.querySelector("#email").value,
+  };
 
-    console.log(contact);
+  console.log(contact);
 
-    // Mise en place du tableau de produits desttiné au server
-    let products = [];
+  // Mise en place du tableau de produits destinée au serveur
+  let products = [];
 
-    // ont boucle sur le tableau du ls afin de ressortir les id
-    for (let k = 0; k < itemRecovery.length; k++) {
-      products.push(itemRecovery[k].id);
-    }
-    //si le tableau est vide, supprssion du tableau du local storage
-    if (products.length === 0) {
-      localStorage.removeItem(product);
-    }
-    console.log(products);
+  // ont boucle sur le tableau du ls afin de ressortir les id
+  for (let k = 0; k < itemRecovery.length; k++) {
+    products.push(itemRecovery[k].id);
+  }
+  //si le tableau est vide, suppression du tableau du local storage
+  if (products.length === 0) {
+    localStorage.removeItem(product);
+  }
+  console.log(products);
 
-    // Mise en place de l'objet contact dans le local storage
-    localStorage.setItem("contact", JSON.stringify(contact));
+  // Mise en place de l'objet contact dans le local storage
+  localStorage.setItem("contact", JSON.stringify(contact));
 
-    // objet formulaire et produit a envoyer ver le server
+  // objet formulaire et produit à envoyer vers le serveur
 
-    const objectSendServer = {
-      products,
-      contact,
-    };
+  const objectSendServer = {
+    products,
+    contact,
+  };
 
-    console.log(objectSendServer);
+  console.log(objectSendServer);
 
-    //fonction de configuration du POST pour l'envoie vers le server
+  if (
+    firstName.value == "" ||
+    lastName.value == "" ||
+    address.value == "" ||
+    city.value == "" ||
+    email.value == ""
+  ) {
+    alert("veuilllez remplir le formulaire!");
+  } else {
+    //fonction de configuration et d'envoi du POST vers le serveur
     function sendForm() {
       const send = {
         method: "POST",
@@ -433,17 +447,10 @@ const postForm = () => {
       fetch("http://localhost:3000/api/products/order", send)
         .then(async (res) => {
           const contentData = await res.json();
-
-          if (contentData.contact !== undefined) {
-            window.location.href = `confirmation.html?orderId=${contentData.orderId}`;
-          } else {
-            alert("merci de remplir le formulaire de contact");
-          }
+          window.location.href = `confirmation.html?orderId=${contentData.orderId}`;
         })
         .catch((error) => console.log(error));
     }
-
     sendForm();
-  });
-};
-postForm();
+  }
+});

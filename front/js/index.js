@@ -1,4 +1,4 @@
-// Ont appel l'API et ont fait un fetch afin d'obtenir en reponse les donné produit de l'api
+// Appel de l'API et fetch afin d'obtenir en réponse les données produits de l'api
 loading().then((data) => {
   config = data;
   fetch(config.host + "/api/products")
@@ -7,7 +7,7 @@ loading().then((data) => {
       productsData = data;
       document.getElementById("items").innerHTML = productsData
         .map(
-          //ont positionne le .map dans le dom
+          //on positionne le .map dans le dom
           (product) =>
             `
   <a href="./product.html?id=${product._id}">
@@ -19,6 +19,6 @@ loading().then((data) => {
   </a>
   `
         )
-        .join(""); //on enleve les guillemets
+        .join(""); //on enlève les guillemets
     });
 });

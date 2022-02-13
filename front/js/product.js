@@ -6,7 +6,7 @@ const quantity = document.getElementById("quantity");
 console.log(product_id);
 
 //appelle de produit individuel via l'api et l'ID
-//insertion dans le html via JavaScript
+//insertion dans le HTML via JavaScript
 loading().then((data) => {
   config = data;
   fetch(config.host + `/api/products/${product_id}`)
@@ -45,7 +45,7 @@ loading().then((data) => {
       let quantityProducts = quantity.value;
       let colorsProducts = optionSelect.value;
 
-      //création d'une fenetre poPup de confirmation d'article
+      //création d'une fenêtre poPup de confirmation d'article
       const popupConfirmation = () => {
         if (
           window.confirm(
@@ -58,7 +58,7 @@ loading().then((data) => {
         }
       };
 
-      // fenetre poPup en fonction des conditions
+      // fenêtre poPup en fonction des conditions
       const productIsOk = () => {
         if (
           quantityProducts < 1 ||
@@ -71,7 +71,7 @@ loading().then((data) => {
         }
       };
 
-      //création d'un tableau qui prend en compte les article selectionner, la quantité, la couleur et le prix
+      //création d'un tableau qui prend en compte les articles sélectionner, la quantité, la couleur et le prix
 
       let tableToAddLocalStorage = {
         color: colorsProducts,
@@ -80,7 +80,7 @@ loading().then((data) => {
       };
       console.log(tableToAddLocalStorage);
 
-      //initialisation du local sttorage "key value"/ conversion des donnée au format json , en objet javascript
+      //initialisation du local sttorage "key value"/ conversion des données au format JSON , en objet Javascript
       let tableProducts = JSON.parse(localStorage.getItem("product"));
 
       // ajout de produit dans le local storage
@@ -89,8 +89,8 @@ loading().then((data) => {
         localStorage.setItem("product", JSON.stringify(tableProducts));
       };
 
-      //si il y a deja des produits enregistré dans le local storage
-      //si il y a deja un produit similaire de selectionner
+      //si il y a déjà des produits enregistrés dans le local storage
+      //si il y a déjà un produit similaire de sélectionner
       //si il n'y a pas encore de produit dans le local storage
 
       if (
