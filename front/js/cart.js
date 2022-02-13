@@ -430,9 +430,16 @@ commandButton.addEventListener("click", (event) => {
     lastName.value == "" ||
     address.value == "" ||
     city.value == "" ||
-    email.value == ""
+    (email.value == "" &&
+      document.querySelector("#firstNameErrorMsg").innerHTML !=
+        "Prenom valide") ||
+    document.querySelector("#lastNameErrorMsg").innerHTML != "Nom valide" ||
+    document.querySelector("#addressErrorMsg").innerHTML != "Adresse valide" ||
+    document.querySelector("#cityErrorMsg").innerHTML !=
+      "Nom de ville valide" ||
+    document.querySelector("#emailErrorMsg").innerHTML != "Adresse email valide"
   ) {
-    alert("veuilllez remplir le formulaire!");
+    alert("veuilllez remplir correctement le formulaire!");
   } else {
     //fonction de configuration et d'envoi du POST vers le serveur
     function sendForm() {
