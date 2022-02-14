@@ -14,8 +14,6 @@ const cartDisplay = () => {
         fetch(config.host + `/api/products/${itemRecovery[product].id}`)
           .then((res) => res.json())
           .then((data) => {
-            console.log(data);
-
             if (
               itemRecovery[product].color != undefined &&
               data.price != undefined
@@ -268,18 +266,12 @@ const secureForm = () => {
   let address = document.getElementById("address");
   let city = document.getElementById("city");
   let email = document.getElementById("email");
-  let button = document.getElementById("order");
 
-  //fonction de désactivation du bouton d'envoi du formulaire
-  function disableSubmit(disabled) {
-    if (disabled) {
-      button.setAttribute("disabled", true);
-      button.style.opacity = "0.55";
-    } else {
-      button.removeAttribute("disabled", false);
-      button.style.opacity = "1";
-    }
-  }
+  // function disableSubmit() {
+  //   let button = document.getElementById("order");
+  //   button.removeAttribute("disabled", false);
+  //   button.style.opacity = 1;
+  // }
 
   //validation du prénom
   const nameValidation = () => {
@@ -288,18 +280,16 @@ const secureForm = () => {
 
   //écoute du changement sur l'input
   firstName.addEventListener("change", (e) => {
-    //e.preventDefault();
     //si le regexp ciblé n'est pas conforme, on désactive l'envoi du formulaire et on met un message de validation
     if (nameRegex.test(e.target.value)) {
       firstName.style.background = "white";
       nameValidation().innerText = "Prenom valide";
       nameValidation().style.color = "lightgreen";
-      disableSubmit(false);
+      // disableSubmit();
     } else {
       firstName.style.background = "pink";
       nameValidation().innerText = "Prenom invalide";
       nameValidation().style.color = "#fbbcbc";
-      disableSubmit(true);
     }
   });
 
@@ -309,17 +299,15 @@ const secureForm = () => {
   };
 
   lastName.addEventListener("change", (e) => {
-    //e.preventDefault();
     if (lastNameRegex.test(e.target.value)) {
       lastName.style.background = "white";
       lastNameValidation().innerText = "Nom valide";
       lastNameValidation().style.color = "lightgreen";
-      disableSubmit(false);
+      // disableSubmit();
     } else {
       lastName.style.background = "pink";
       lastNameValidation().innerText = "Nom invalide";
       lastNameValidation().style.color = "#fbbcbc";
-      disableSubmit(true);
     }
   });
 
@@ -329,17 +317,15 @@ const secureForm = () => {
   };
 
   address.addEventListener("change", (e) => {
-    //e.preventDefault();
     if (adressRegex.test(e.target.value)) {
       address.style.background = "white";
       adressValidation().innerText = "Adresse valide";
       adressValidation().style.color = "lightgreen";
-      disableSubmit(false);
+      // disableSubmit();
     } else {
       address.style.background = "pink";
       adressValidation().innerText = "Adresse invalide";
       adressValidation().style.color = "#fbbcbc";
-      disableSubmit(true);
     }
   });
 
@@ -349,17 +335,15 @@ const secureForm = () => {
   };
 
   city.addEventListener("change", (e) => {
-    //e.preventDefault();
     if (cityRegex.test(e.target.value)) {
       city.style.background = "white";
       cityValidation().innerText = "Nom de ville valide";
       cityValidation().style.color = "lightgreen";
-      disableSubmit(false);
+      // disableSubmit();
     } else {
       city.style.background = "pink";
       cityValidation().innerText = "Nom de ville invalide";
       cityValidation().style.color = "#fbbcbc";
-      disableSubmit(true);
     }
   });
 
@@ -369,21 +353,27 @@ const secureForm = () => {
   };
 
   email.addEventListener("change", (e) => {
-    //e.preventDefault();
     if (emailRegex.test(e.target.value)) {
       email.style.background = "white";
       emailValidation().innerText = "Adresse email valide";
       emailValidation().style.color = "lightgreen";
-      disableSubmit(false);
+      // disableSubmit();
     } else {
       email.style.background = "pink";
       emailValidation().innerText = "Adresse email invalide";
       emailValidation().style.color = "#fbbcbc";
-      disableSubmit(true);
     }
   });
 };
 secureForm();
+
+// function disableSubmit(disabled) {
+//   let button = document.getElementById("order");
+//   if (disabled) {
+//     button.setAttribute("disabled", true);
+//     button.style.opacity = 0.5;
+//   }
+// }
 
 const commandButton = document.querySelector("#order");
 commandButton.addEventListener("click", (event) => {
@@ -398,8 +388,6 @@ commandButton.addEventListener("click", (event) => {
     email: document.querySelector("#email").value,
   };
 
-  console.log(contact);
-
   // Mise en place du tableau de produits destinée au serveur
   let products = [];
 
@@ -411,7 +399,6 @@ commandButton.addEventListener("click", (event) => {
   if (products.length === 0) {
     localStorage.removeItem(product);
   }
-  console.log(products);
 
   // Mise en place de l'objet contact dans le local storage
   localStorage.setItem("contact", JSON.stringify(contact));
@@ -423,22 +410,20 @@ commandButton.addEventListener("click", (event) => {
     contact,
   };
 
-  console.log(objectSendServer);
-
   if (
     firstName.value == "" ||
     lastName.value == "" ||
     address.value == "" ||
     city.value == "" ||
-    (email.value == "" &&
-      document.querySelector("#firstNameErrorMsg").innerHTML !=
-        "Prenom valide") ||
+    email.value == "" ||
+    document.querySelector("#firstNameErrorMsg").innerHTML != "Prenom valide" ||
     document.querySelector("#lastNameErrorMsg").innerHTML != "Nom valide" ||
     document.querySelector("#addressErrorMsg").innerHTML != "Adresse valide" ||
     document.querySelector("#cityErrorMsg").innerHTML !=
       "Nom de ville valide" ||
     document.querySelector("#emailErrorMsg").innerHTML != "Adresse email valide"
   ) {
+    //disableSubmit(true);
     alert("veuilllez remplir correctement le formulaire!");
   } else {
     //fonction de configuration et d'envoi du POST vers le serveur
