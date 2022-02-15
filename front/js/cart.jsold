@@ -14,8 +14,6 @@ const cartDisplay = () => {
         fetch(config.host + `/api/products/${itemRecovery[product].id}`)
           .then((res) => res.json())
           .then((data) => {
-            console.log(data);
-
             if (
               itemRecovery[product].color != undefined &&
               data.price != undefined
@@ -252,110 +250,130 @@ for (let i = 0; i < itemRecovery.length; i++) {
 
 //************************************************formulaire de contact
 
-//création et stockage des regexp
-let nameRegex = /^[a-z]{2,20}$/i;
-let lastNameRegex = /^[a-z ,.'-]+$/i;
-let adressRegex = /^[a-z|0-9\s]+[a-z\s]+[\w\-?\s]*[\w]*$/i;
-let cityRegex = /^[a-z]+(?:[\s-][a-z]+)*$/i;
-let emailRegex =
-  /^[a-z0-9\-_]+[a-z0-9\.\-_]*@[a-z0-9\-_]{2,}\.[a-z\.\-_]+[a-z\-_]+$/i;
+//fonction de sécurisation du formulaire
+const secureForm = () => {
+  //création et stockage des regexp
+  let nameRegex = /^[a-z]{2,20}$/i;
+  let lastNameRegex = /^[a-z ,.'-]+$/i;
+  let adressRegex = /^[a-z|0-9\s]+[a-z\s]+[\w\-?\s]*[\w]*$/i;
+  let cityRegex = /^[a-z]+(?:[\s-][a-z]+)*$/i;
+  let emailRegex =
+    /^[a-z0-9\-_]+[a-z0-9\.\-_]*@[a-z0-9\-_]{2,}\.[a-z\.\-_]+[a-z\-_]+$/i;
 
-// stockage des inputs
-let firstName = document.getElementById("firstName");
-let lastName = document.getElementById("lastName");
-let address = document.getElementById("address");
-let city = document.getElementById("city");
-let email = document.getElementById("email");
-let button = document.getElementById("order");
+  // stockage des inputs
+  let firstName = document.getElementById("firstName");
+  let lastName = document.getElementById("lastName");
+  let address = document.getElementById("address");
+  let city = document.getElementById("city");
+  let email = document.getElementById("email");
 
-//validation du prénom
-const nameValidation = () => {
-  return document.getElementById("firstNameErrorMsg");
+  // function disableSubmit() {
+  //   let button = document.getElementById("order");
+  //   button.removeAttribute("disabled", false);
+  //   button.style.opacity = 1;
+  // }
+
+  //validation du prénom
+  const nameValidation = () => {
+    return document.getElementById("firstNameErrorMsg");
+  };
+
+  //écoute du changement sur l'input
+  firstName.addEventListener("change", (e) => {
+    //si le regexp ciblé n'est pas conforme, on désactive l'envoi du formulaire et on met un message de validation
+    if (nameRegex.test(e.target.value)) {
+      firstName.style.background = "white";
+      nameValidation().innerText = "Prenom valide";
+      nameValidation().style.color = "lightgreen";
+      // disableSubmit();
+    } else {
+      firstName.style.background = "pink";
+      nameValidation().innerText = "Prenom invalide";
+      nameValidation().style.color = "#fbbcbc";
+    }
+  });
+
+  //validation du nom
+  const lastNameValidation = () => {
+    return document.getElementById("lastNameErrorMsg");
+  };
+
+  lastName.addEventListener("change", (e) => {
+    if (lastNameRegex.test(e.target.value)) {
+      lastName.style.background = "white";
+      lastNameValidation().innerText = "Nom valide";
+      lastNameValidation().style.color = "lightgreen";
+      // disableSubmit();
+    } else {
+      lastName.style.background = "pink";
+      lastNameValidation().innerText = "Nom invalide";
+      lastNameValidation().style.color = "#fbbcbc";
+    }
+  });
+
+  //validation de l'adresse
+  const adressValidation = () => {
+    return document.getElementById("addressErrorMsg");
+  };
+
+  address.addEventListener("change", (e) => {
+    if (adressRegex.test(e.target.value)) {
+      address.style.background = "white";
+      adressValidation().innerText = "Adresse valide";
+      adressValidation().style.color = "lightgreen";
+      // disableSubmit();
+    } else {
+      address.style.background = "pink";
+      adressValidation().innerText = "Adresse invalide";
+      adressValidation().style.color = "#fbbcbc";
+    }
+  });
+
+  //validation de la ville
+  const cityValidation = () => {
+    return document.getElementById("cityErrorMsg");
+  };
+
+  city.addEventListener("change", (e) => {
+    if (cityRegex.test(e.target.value)) {
+      city.style.background = "white";
+      cityValidation().innerText = "Nom de ville valide";
+      cityValidation().style.color = "lightgreen";
+      // disableSubmit();
+    } else {
+      city.style.background = "pink";
+      cityValidation().innerText = "Nom de ville invalide";
+      cityValidation().style.color = "#fbbcbc";
+    }
+  });
+
+  //validation de l'adresse email
+  const emailValidation = () => {
+    return document.getElementById("emailErrorMsg");
+  };
+
+  email.addEventListener("change", (e) => {
+    if (emailRegex.test(e.target.value)) {
+      email.style.background = "white";
+      emailValidation().innerText = "Adresse email valide";
+      emailValidation().style.color = "lightgreen";
+      // disableSubmit();
+    } else {
+      email.style.background = "pink";
+      emailValidation().innerText = "Adresse email invalide";
+      emailValidation().style.color = "#fbbcbc";
+    }
+  });
 };
+secureForm();
 
-//écoute du changement sur l'input
-firstName.addEventListener("change", (e) => {
-  //si le regexp ciblé n'est pas conforme, on désactive l'envoi du formulaire et on met un message de validation
-  if (nameRegex.test(e.target.value)) {
-    firstName.style.background = "white";
-    nameValidation().innerText = "Prenom valide";
-    nameValidation().style.color = "lightgreen";
-  } else {
-    firstName.style.background = "pink";
-    nameValidation().innerText = "Prenom invalide";
-    nameValidation().style.color = "#fbbcbc";
-  }
-});
-
-//validation du nom
-const lastNameValidation = () => {
-  return document.getElementById("lastNameErrorMsg");
-};
-
-lastName.addEventListener("change", (e) => {
-  if (lastNameRegex.test(e.target.value)) {
-    lastName.style.background = "white";
-    lastNameValidation().innerText = "Nom valide";
-    lastNameValidation().style.color = "lightgreen";
-  } else {
-    lastName.style.background = "pink";
-    lastNameValidation().innerText = "Nom invalide";
-    lastNameValidation().style.color = "#fbbcbc";
-  }
-});
-
-//validation de l'adresse
-const adressValidation = () => {
-  return document.getElementById("addressErrorMsg");
-};
-
-address.addEventListener("change", (e) => {
-  if (adressRegex.test(e.target.value)) {
-    address.style.background = "white";
-    adressValidation().innerText = "Adresse valide";
-    adressValidation().style.color = "lightgreen";
-  } else {
-    address.style.background = "pink";
-    adressValidation().innerText = "Adresse invalide";
-    adressValidation().style.color = "#fbbcbc";
-  }
-});
-
-//validation de la ville
-const cityValidation = () => {
-  return document.getElementById("cityErrorMsg");
-};
-
-city.addEventListener("change", (e) => {
-  if (cityRegex.test(e.target.value)) {
-    city.style.background = "white";
-    cityValidation().innerText = "Nom de ville valide";
-    cityValidation().style.color = "lightgreen";
-  } else {
-    city.style.background = "pink";
-    cityValidation().innerText = "Nom de ville invalide";
-    cityValidation().style.color = "#fbbcbc";
-  }
-});
-
-//validation de l'adresse email
-const emailValidation = () => {
-  return document.getElementById("emailErrorMsg");
-};
-
-email.addEventListener("change", (e) => {
-  if (emailRegex.test(e.target.value)) {
-    email.style.background = "white";
-    emailValidation().innerText = "Adresse email valide";
-    emailValidation().style.color = "lightgreen";
-  } else {
-    email.style.background = "pink";
-    emailValidation().innerText = "Adresse email invalide";
-    emailValidation().style.color = "#fbbcbc";
-  }
-});
-
-//Mise en place des données nécessaires à l'envoi vers le serveur
+// function disableSubmit(disabled) {
+//   let button = document.getElementById("order");
+//   if (disabled) {
+//     button.setAttribute("disabled", true);
+//     button.style.opacity = 0.5;
+//   }
+// }
 
 const commandButton = document.querySelector("#order");
 commandButton.addEventListener("click", (event) => {
@@ -370,8 +388,6 @@ commandButton.addEventListener("click", (event) => {
     email: document.querySelector("#email").value,
   };
 
-  console.log(contact);
-
   // Mise en place du tableau de produits destinée au serveur
   let products = [];
 
@@ -383,55 +399,50 @@ commandButton.addEventListener("click", (event) => {
   if (products.length === 0) {
     localStorage.removeItem(product);
   }
-  console.log(products);
 
-  //fonction de configuration et d'envoi du POST vers le serveur
+  // Mise en place de l'objet contact dans le local storage
+  localStorage.setItem("contact", JSON.stringify(contact));
+
+  // objet formulaire et produit à envoyer vers le serveur
+
+  const objectSendServer = {
+    products,
+    contact,
+  };
+
   if (
-    (contact.firstName != " " ||
-      contact.lastName != " " ||
-      contact.address != " " ||
-      contact.city != " " ||
-      contact.email != " ") &&
-    nameRegex.test(contact.firstName) &&
-    lastNameRegex.test(contact.lastName) &&
-    adressRegex.test(contact.address) &&
-    cityRegex.test(contact.city) &&
-    emailRegex.test(contact.email)
+    firstName.value == "" ||
+    lastName.value == "" ||
+    address.value == "" ||
+    city.value == "" ||
+    email.value == "" ||
+    document.querySelector("#firstNameErrorMsg").innerHTML != "Prenom valide" ||
+    document.querySelector("#lastNameErrorMsg").innerHTML != "Nom valide" ||
+    document.querySelector("#addressErrorMsg").innerHTML != "Adresse valide" ||
+    document.querySelector("#cityErrorMsg").innerHTML !=
+      "Nom de ville valide" ||
+    document.querySelector("#emailErrorMsg").innerHTML != "Adresse email valide"
   ) {
-    // Mise en place de l'objet contact dans le local storage
-    localStorage.setItem("contact", JSON.stringify(contact));
-
-    // objet formulaire et produit à envoyer vers le serveur
-    const objectSendServer = {
-      products,
-      contact,
-    };
-
-    console.log(objectSendServer);
-
-    const send = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(objectSendServer),
-    };
-
-    fetch("http://localhost:3000/api/products/order", send)
-      .then(async (res) => {
-        try {
-          if (res.ok) {
-            const contentData = await res.json();
-            window.location.href = `confirmation.html?orderId=${contentData.orderId}`;
-          } else {
-            alert(`Problème avec le serveur : erreur ${res.status}`);
-          }
-        } catch (error) {
-          alert(`Erreur qui vient du catch() : ${error}`);
-        }
-      })
-      .catch((error) => console.log(error));
-  } else {
+    //disableSubmit(true);
     alert("veuilllez remplir correctement le formulaire!");
+  } else {
+    //fonction de configuration et d'envoi du POST vers le serveur
+    function sendForm() {
+      const send = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(objectSendServer),
+      };
+
+      fetch("http://localhost:3000/api/products/order", send)
+        .then(async (res) => {
+          const contentData = await res.json();
+          window.location.href = `confirmation.html?orderId=${contentData.orderId}`;
+        })
+        .catch((error) => console.log(error));
+    }
+    sendForm();
   }
 });
