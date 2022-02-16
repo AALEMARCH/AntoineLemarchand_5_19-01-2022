@@ -174,6 +174,7 @@ for (let i = 0; i < itemRecovery.length; i++) {
         getTotalPrice();
 
         //*********************************************************Activation du boutton supprimé
+        console.log(itemRecovery.length);
         const deleteProduct = () => {
           let balises = document.querySelectorAll(".deleteItem");
 
@@ -193,6 +194,9 @@ for (let i = 0; i < itemRecovery.length; i++) {
 
               //sauvegarde sur le local storage
               localStorage.setItem("product", JSON.stringify(itemRecovery));
+              if (itemRecovery.length === 0) {
+                localStorage.clear();
+              }
 
               //rechargement de la page
               window.location.reload();
