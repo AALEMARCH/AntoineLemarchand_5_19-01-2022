@@ -158,7 +158,6 @@ for (let i = 0; i < itemRecovery.length; i++) {
     config = data;
     fetch(config.host + `/api/products/${itemRecovery[i].id}`)
       .then((res) => res.json())
-      .catch((err) => console.log(err))
       .then((data) => {
         //**********************************************calcul du prix total des produits selectionnés
         function getTotalPrice() {
@@ -421,8 +420,8 @@ commandButton.addEventListener("click", (event) => {
       body: JSON.stringify(objectSendServer),
     };
 
-    fetch("http://localhost:3000/api/products/order", send)
-      .then(async (res) => {
+    fetch("http://localhost:3000/api/products/order", send).then(
+      async (res) => {
         try {
           if (res.ok) {
             const contentData = await res.json();
@@ -433,8 +432,8 @@ commandButton.addEventListener("click", (event) => {
         } catch (error) {
           alert(`Erreur qui vient du catch() : ${error}`);
         }
-      })
-      .catch((error) => console.log(error));
+      }
+    );
   } else {
     alert("veuilllez remplir correctement le formulaire!");
   }

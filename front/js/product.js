@@ -71,7 +71,7 @@ loading().then((data) => {
         }
       };
 
-      //création d'un tableau qui prend en compte les articles sélectionner, la quantité, la couleur et le prix
+      // Receuil des données à ajouter au panier
 
       let tableToAddLocalStorage = {
         color: colorsProducts,
